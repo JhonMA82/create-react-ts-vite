@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2025-09-16
+
+### Changed
+- Version increment to 1.0.2
+- Updated package-lock.json and pnpm-lock.yaml
+- Package.json repository URL normalization
+- Added pnpm-release-manager configuration
+
+### Technical
+- Switched from npm to pnpm package management
+- Added automated release management workflow
+- Improved package.json metadata consistency
+
+---
+
 ## [1.0.1] - 2025-09-16
 
 ### Added
