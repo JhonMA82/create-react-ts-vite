@@ -1,11 +1,11 @@
 {
   "name": "create-react-ts-vite",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI template generator para proyectos React+Vite+TypeScript+Vitest con mejores prácticas 2025",
   "main": "lib/index.js",
   "bin": {
-    "create-react-ts-vite": "./bin/cli.js"
+    "create-react-ts-vite": "bin/cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jhonma82/create-react-ts-vite.git"
+    "url": "git+https://github.com/jhonma82/create-react-ts-vite.git"
   },
   "bugs": {
     "url": "https://github.com/jhonma82/create-react-ts-vite/issues"
