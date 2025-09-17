@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] - 2025-09-17
+
+### Changed
+- **Package management**: Improved package.json normalization with pnpm
+- **Version consistency**: Updated to version 1.0.6 with proper semver formatting
+- **Dependencies**: Verified and validated all dependency configurations
+
+### Technical
+- Applied pnpm package normalization and URL consistency fixes
+- Updated package.json metadata to follow best practices
+- Verified CLI functionality with test project creation and build process
+- Ensured all project files are properly configured for release
+
+---
+
 ## [1.0.5] - 2025-09-16
 
 ### Added
