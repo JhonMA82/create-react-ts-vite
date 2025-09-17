@@ -1,10 +1,10 @@
-# Reporte de Publicación - create-react-ts-vite v1.0.3
+# Reporte de Publicación - create-react-ts-vite v1.0.4
 
 ## Información General
 - **Paquete**: create-react-ts-vite
-- **Versión**: 1.0.3
+- **Versión**: 1.0.4
 - **Fecha**: 2025-09-16
-- **Commit SHA**: 978c284
+- **Commit SHA**: 1cf56dd
 - **Rama**: main
 
 ## Resumen del Proceso
@@ -25,18 +25,18 @@
    - Mensaje: "No build needed for this package"
 
 4. **Versionado**:
-   - Versión incrementada de 1.0.2 a 1.0.3
+   - Versión incrementada de 1.0.3 a 1.0.4
    - Formato semver correcto (X.Y.Z)
    - package.json y package-lock.json actualizados
 
 5. **CHANGELOG**:
    - CHANGELOG.md actualizado con nueva versión
-   - Documentadas correcciones críticas de ES modules
+   - Documentadas nuevas características interactivas y VS Code integration
 
 6. **Commit y tag**:
-   - Commit exitoso: "chore(release): v1.0.3"
-   - Tag anotada creada: v1.0.3
-   - 4 archivos modificados, 21 insertions, 5 deletions
+   - Commit exitoso: "chore(release): v1.0.4"
+   - Tag anotada creada: v1.0.4
+   - 4 archivos modificados, 78 insertions, 7 deletions
 
 7. **Push**:
    - Cambios subidos exitosamente a GitHub
@@ -71,35 +71,41 @@
 
 ### Estadísticas de Publicación (intento)
 - **Nombre del paquete**: create-react-ts-vite
-- **Versión**: 1.0.3
-- **Tamaño del tarball**: 14.6 kB
-- **Tamaño descomprimido**: 42.1 kB
+- **Versión**: 1.0.4
+- **Tamaño del tarball**: 15.5 kB
+- **Tamaño descomprimido**: 45.2 kB
 - **Número de archivos**: 9
-- **SHA512**: I7AhMnhABdE+q[...]HnvT6ly5YtKwg==
+- **SHA512**: 44c0d281dcb010c[...]LGuOOgBKA==
 
 ### Archivos Incluidos
 - `.claude/agents/pnpm-release-manager.md` (4.8kB)
 - `.claude/settings.json` (953B)
-- `CHANGELOG.md` (1.8kB)
+- `CHANGELOG.md` (3.6kB)
 - `README.md` (5.6kB)
 - `bin/cli.js` (584B)
-- `lib/index.js` (10.9kB)
+- `lib/index.js` (12.8kB)
 - `package.json` (1.0kB)
-- `report.md` (4.2kB)
+- `report.md` (4.5kB)
 - `templates/claude.md` (11.3kB)
 
 ## Cambios Incluidos en esta Versión
 
 ### Modificaciones
-- **Critical bug fix**: Corregido vite.config.ts template para usar ES modules
-- **Added dependency**: Agregado @types/node a devDependencies
-- Versión incrementada a 1.0.3
-- CHANGELOG.md actualizado con release notes
+- **Interactive menu**: Added readline import for user interaction
+- **Post-creation options**: Users can now choose what to do after project creation
+- **VS Code integration**: Options to automatically open VS Code after project creation
+- **Flexible development workflow**: Choose between opening editor, starting dev server, or both
+- **Enhanced CLI experience**: Replaced automatic dev server start with interactive menu
+- **Improved user control**: Users now have more control over post-creation workflow
+- **Better code organization**: Separated interactive functionality into dedicated function
+- **Enhanced error handling**: Added proper input validation and error recovery
 
 ### Técnicos
-- Template generator ahora produce ES modules compliant vite.config.ts
-- Mejorada configuración TypeScript con tipos Node.js apropiados
-- Enhanced template compatibility with modern ES modules standards
+- Added readline module import for terminal user interaction
+- Created `showInteractiveOptions()` function for menu handling
+- Improved CLI user experience with choice-based workflow
+- Added proper shell execution for VS Code opening
+- Enhanced input validation with recursive fallback for invalid choices
 
 ## Próximos Pasos Requeridos
 
@@ -136,4 +142,4 @@ Para resolver el problema de autenticación:
 ---
 *Generado automáticamente por pnpm-release-manager*
 *Fecha: 2025-09-16*
-*Commit: 978c284*
+*Commit: 1cf56dd*
