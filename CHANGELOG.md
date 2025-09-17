@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-09-16
+
+### Added
+- **Interactive menu**: Added readline import for user interaction
+- **Post-creation options**: Users can now choose what to do after project creation
+- **VS Code integration**: Options to automatically open VS Code after project creation
+- **Flexible development workflow**: Choose between opening editor, starting dev server, or both
+
+### Changed
+- **Enhanced CLI experience**: Replaced automatic dev server start with interactive menu
+- **Improved user control**: Users now have more control over post-creation workflow
+- **Better code organization**: Separated interactive functionality into dedicated function
+- **Enhanced error handling**: Added proper input validation and error recovery
+
+### Technical
+- Added readline module import for terminal user interaction
+- Created `showInteractiveOptions()` function for menu handling
+- Improved CLI user experience with choice-based workflow
+- Added proper shell execution for VS Code opening
+- Enhanced input validation with recursive fallback for invalid choices
+
+---
+
 ## [1.0.3] - 2025-09-16
 
 ### Fixed
