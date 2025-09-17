@@ -1,10 +1,10 @@
-# Reporte de Publicación - create-react-ts-vite v1.0.2
+# Reporte de Publicación - create-react-ts-vite v1.0.3
 
 ## Información General
 - **Paquete**: create-react-ts-vite
-- **Versión**: 1.0.2
+- **Versión**: 1.0.3
 - **Fecha**: 2025-09-16
-- **Commit SHA**: 2af044d
+- **Commit SHA**: 978c284
 - **Rama**: main
 
 ## Resumen del Proceso
@@ -25,18 +25,18 @@
    - Mensaje: "No build needed for this package"
 
 4. **Versionado**:
-   - Versión incrementada de 1.0.1 a 1.0.2
+   - Versión incrementada de 1.0.2 a 1.0.3
    - Formato semver correcto (X.Y.Z)
    - package.json y package-lock.json actualizados
 
 5. **CHANGELOG**:
    - CHANGELOG.md actualizado con nueva versión
-   - Documentados cambios técnicos y mejoras
+   - Documentadas correcciones críticas de ES modules
 
 6. **Commit y tag**:
-   - Commit exitoso: "chore(release): v1.0.2"
-   - Tag anotada creada: v1.0.2
-   - 8 archivos modificados, 446 insertions, 861 deletions
+   - Commit exitoso: "chore(release): v1.0.3"
+   - Tag anotada creada: v1.0.3
+   - 4 archivos modificados, 21 insertions, 5 deletions
 
 7. **Push**:
    - Cambios subidos exitosamente a GitHub
@@ -71,11 +71,11 @@
 
 ### Estadísticas de Publicación (intento)
 - **Nombre del paquete**: create-react-ts-vite
-- **Versión**: 1.0.2
-- **Tamaño del tarball**: 14.4 kB
-- **Tamaño descomprimido**: 41.1 kB
+- **Versión**: 1.0.3
+- **Tamaño del tarball**: 14.6 kB
+- **Tamaño descomprimido**: 42.1 kB
 - **Número de archivos**: 9
-- **SHA256**: 066790332151e634d3a4a7327bec94c5bac261b3
+- **SHA512**: I7AhMnhABdE+q[...]HnvT6ly5YtKwg==
 
 ### Archivos Incluidos
 - `.claude/agents/pnpm-release-manager.md` (4.8kB)
@@ -91,25 +91,24 @@
 ## Cambios Incluidos en esta Versión
 
 ### Modificaciones
-- Versión incrementada a 1.0.2
-- package.json y package-lock.yaml actualizados
-- CHANGELOG.md actualizado con nuevo release
-- Configuración de pnpm-release-manager agregada
+- **Critical bug fix**: Corregido vite.config.ts template para usar ES modules
+- **Added dependency**: Agregado @types/node a devDependencies
+- Versión incrementada a 1.0.3
+- CHANGELOG.md actualizado con release notes
 
 ### Técnicos
-- Migración de npm a pnpm
-- Flujo de publicación automatizado implementado
-- Normalización de metadatos del paquete
-- Mejoras en la gestión de dependencias
+- Template generator ahora produce ES modules compliant vite.config.ts
+- Mejorada configuración TypeScript con tipos Node.js apropiados
+- Enhanced template compatibility with modern ES modules standards
 
 ## Próximos Pasos Requeridos
 
 1. **Configurar Autenticación**:
-   - Establecer variable de entorno `pnpm_TOKEN`
-   - O configurar `.npmrc` con credenciales válidas
+   - Obtener código OTP de autenticación de dos factores
+   - Ejecutar `pnpm publish --access public --otp=<código>`
 
 2. **Reintentar Publicación**:
-   - Ejecutar `pnpm publish --access public` con autenticación
+   - Ejecutar `pnpm publish --access public --otp=<código>` con autenticación
 
 3. **Mejoras Opcionales**:
    - Considerar agregar tests básicos
@@ -137,4 +136,4 @@ Para resolver el problema de autenticación:
 ---
 *Generado automáticamente por pnpm-release-manager*
 *Fecha: 2025-09-16*
-*Commit: 2af044d*
+*Commit: 978c284*
