@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2025-09-16
+
+### Added
+- **Git integration**: Automatic git repository initialization during project creation
+- **Initial commit**: Added `createInitialCommit()` function for automatic first commit
+- **Git user configuration**: Robust handling of git user setup with fallback defaults
+- **Enhanced success messages**: Improved CLI feedback with git setup information
+- **Error handling**: Better error handling for git operations and graceful failures
+
+### Changed
+- **Project workflow**: Modified CLI workflow to include git initialization step
+- **User experience**: Enhanced success messages with git configuration details
+- **Code organization**: Added dedicated git handling functions
+
+### Fixed
+- **Git operations**: Improved error handling when git user is not configured
+- **Graceful degradation**: Better handling of git operation failures
+
+---
+
 ## [1.0.4] - 2025-09-16
 
 ### Added
