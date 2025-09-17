@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-09-16
+
+### Fixed
+- **Critical bug fix**: Corrected vite.config.ts template to use ES modules instead of CommonJS
+  - Changed `import path from 'path'` to `import { fileURLToPath, URL } from 'node:url'`
+  - Updated path resolution from `path.resolve(__dirname, './src')` to `fileURLToPath(new URL('./src', import.meta.url))`
+- **Added dependency**: Added `@types/node` to development dependencies for proper TypeScript support
+
+### Technical
+- Template generator now produces ES modules compliant vite.config.ts
+- Improved TypeScript configuration with proper Node.js types
+- Enhanced template compatibility with modern ES modules standards
+
+---
+
 ## [1.0.2] - 2025-09-16
 
 ### Changed
