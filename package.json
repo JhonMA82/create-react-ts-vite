@@ -8,9 +8,10 @@
     "create-react-ts-vite": "bin/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests yet\"",
     "prepublishOnly": "npm run build",
-    "build": "echo \"No build needed for this package\""
+    "build": "echo \"No build needed for this package\"",
+    "prepare": "husky"
   },
   "keywords": [
     "react",
@@ -39,5 +40,10 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^9.1.7"
   }
 }
