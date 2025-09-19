@@ -8,7 +8,7 @@
     "create-react-ts-vite": "bin/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests specified - skipping\" && exit 0",
     "prepublishOnly": "npm run build",
     "build": "echo \"No build needed for this package\"",
     "prepare": "husky"
