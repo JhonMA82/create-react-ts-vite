@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Lint si existe
 if npm run -s | grep -q "^  lint$"; then
   npm run -s lint || exit 1
