@@ -118,37 +118,360 @@ class ReleaseCommand {
     }
   }
 
+  analyzeChanges() {
+    try {
+      const status = execSync('git status --porcelain', { encoding: 'utf8' });
+      const files = status.trim().split('\n').filter(line => line.trim());
+
+      if (files.length === 0 || (files.length === 1 && files[0] === '')) {
+        return {
+          hasChanges: false,
+          changes: [],
+          suggestedType: null,
+          suggestedVersion: null,
+          message: 'No changes detected'
+        };
+      }
+
+      const changes = files.map(line => {
+        const statusCode = line.substring(0, 2);
+        const filePath = line.substring(3);
+        return { statusCode, filePath };
+      });
+
+      const analysis = this.categorizeChanges(changes);
+      return {
+        hasChanges: true,
+        changes,
+        ...analysis
+      };
+    } catch (error) {
+      return {
+        hasChanges: false,
+        changes: [],
+        suggestedType: null,
+        suggestedVersion: null,
+        message: 'Unable to analyze changes'
+      };
+    }
+  }
+
+  categorizeChanges(changes) {
+    const categories = {
+      feat: [],
+      fix: [],
+      docs: [],
+      style: [],
+      refactor: [],
+      test: [],
+      chore: [],
+      ci: []
+    };
+
+    changes.forEach(change => {
+      const { filePath, statusCode } = change;
+
+      // Ignorar archivos generados o de configuración
+      if (filePath.includes('node_modules/') || filePath.includes('.git/') ||
+          filePath.includes('dist/') || filePath.includes('build/') ||
+          filePath.includes('.log') || filePath.endsWith('.tmp')) {
+        return;
+      }
+
+      // Categorizar por tipo de archivo y contenido
+      if (filePath.includes('test') || filePath.includes('spec') || filePath.includes('__tests__')) {
+        categories.test.push(change);
+      } else if (filePath.includes('doc') || filePath.includes('readme') || filePath.includes('changelog') || filePath.includes('.md')) {
+        categories.docs.push(change);
+      } else if (filePath.includes('.github') || filePath.includes('ci') || filePath.includes('workflow')) {
+        categories.ci.push(change);
+      } else if (filePath.endsWith('.json') || filePath.endsWith('.yaml') || filePath.endsWith('.yml') || filePath.endsWith('.config.js')) {
+        if (filePath.includes('package.json') || filePath.includes('husky') || filePath.includes('commitlint')) {
+          categories.chore.push(change);
+        } else {
+          categories.ci.push(change);
+        }
+      } else if (filePath.endsWith('.css') || filePath.endsWith('.scss') || filePath.endsWith('.less') || filePath.includes('style')) {
+        categories.style.push(change);
+      } else if (filePath.endsWith('.js') || filePath.endsWith('.ts') || filePath.endsWith('.jsx') || filePath.endsWith('.tsx')) {
+        // Análisis más profundo para archivos de código
+        if (statusCode.includes('M') || statusCode.includes('A')) {
+          // Por defecto asumimos refactor, pero podríamos analizar el contenido
+          categories.refactor.push(change);
+        }
+      } else {
+        categories.chore.push(change);
+      }
+    });
+
+    // Determinar el tipo dominante y versión sugerida
+    const dominantType = this.getDominantType(categories);
+    const suggestedVersion = this.getSuggestedVersion(dominantType, categories);
+
+    return {
+      categories,
+      suggestedType: dominantType,
+      suggestedVersion,
+      summary: this.generateSummary(categories, dominantType)
+    };
+  }
+
+  getDominantType(categories) {
+    const priorities = ['feat', 'fix', 'refactor', 'test', 'docs', 'style', 'ci', 'chore'];
+
+    for (const type of priorities) {
+      if (categories[type].length > 0) {
+        return type;
+      }
+    }
+
+    return 'chore';
+  }
+
+  getSuggestedVersion(type, categories) {
+    if (type === 'feat') return 'minor';
+    if (type === 'fix') return 'patch';
+    if (categories.feat.length > 0) return 'minor';
+    if (categories.fix.length > 0) return 'patch';
+    return 'patch'; // Por defecto patch para otros tipos
+  }
+
+  generateSummary(categories, dominantType) {
+    const typeNames = {
+      feat: 'Nuevas funcionalidades',
+      fix: 'Correcciones de errores',
+      docs: 'Documentación',
+      style: 'Estilos y formato',
+      refactor: 'Refactorización',
+      test: 'Pruebas',
+      chore: 'Tareas de mantenimiento',
+      ci: 'CI/CD'
+    };
+
+    const summary = [];
+    Object.entries(categories).forEach(([type, files]) => {
+      if (files.length > 0) {
+        summary.push(`${typeNames[type]}: ${files.length} archivos`);
+      }
+    });
+
+    return {
+      type: typeNames[dominantType] || 'Otros',
+      details: summary.join(', '),
+      dominantType
+    };
+  }
+
+  getSuggestedMessage(type, categories) {
+    const templates = {
+      feat: [
+        "Añade nueva funcionalidad al sistema",
+        "Implementa característica solicitada",
+        "Agrega nueva capacidad de usuario",
+        "Incorpora nueva funcionalidad principal"
+      ],
+      fix: [
+        "Corrige error en el sistema",
+        "Soluciona problema de funcionamiento",
+        "Repara fallo detectado",
+        "Corrige comportamiento inesperado"
+      ],
+      docs: [
+        "Actualiza documentación del proyecto",
+        "Mejora guías y README",
+        "Agrega ejemplos de uso",
+        "Documenta nuevas funcionalidades"
+      ],
+      style: [
+        "Mejora estilos y formato del código",
+        "Actualiza hojas de estilo",
+        "Mejora presentación visual",
+        "Optimiza diseño de interfaz"
+      ],
+      refactor: [
+        "Mejora estructura del código",
+        "Optimiza implementación existente",
+        "Reorganiza componentes internos",
+        "Mejora rendimiento del código"
+      ],
+      test: [
+        "Añade pruebas unitarias",
+        "Mejora cobertura de tests",
+        "Corrige pruebas existentes",
+        "Agrega pruebas de integración"
+      ],
+      chore: [
+        "Actualiza configuración del proyecto",
+        "Mejora scripts de construcción",
+        "Actualiza dependencias",
+        "Optimiza entorno de desarrollo"
+      ],
+      ci: [
+        "Mejora configuración de CI/CD",
+        "Optimiza workflows de GitHub Actions",
+        "Actualiza procesos de despliegue",
+        "Mejora integración continua"
+      ]
+    };
+
+    const messages = templates[type] || templates.chore;
+    return messages[Math.floor(Math.random() * messages.length)];
+  }
+
   makeCommit(args) {
+    // Si no se proporcionan argumentos, analizar cambios y sugerir
+    if (args.length === 0) {
+      const analysis = this.analyzeChanges();
+
+      if (!analysis.hasChanges) {
+        console.log('ℹ️  No hay cambios para commitear.');
+        return;
+      }
+
+      console.log('\n🔍 Análisis de cambios detectados:');
+      console.log('====================================');
+
+      analysis.changes.forEach(change => {
+        const icon = this.getStatusIcon(change.statusCode);
+        console.log(`${icon} ${change.filePath}`);
+      });
+
+      console.log('\n📊 Resumen del análisis:');
+      console.log(`   📝 Tipo de commit sugerido: ${analysis.suggestedType}`);
+      console.log(`   📈 Versión sugerida: ${analysis.suggestedVersion}`);
+      console.log(`   📂 Categoría principal: ${analysis.summary.type}`);
+      console.log(`   📋 Detalles: ${analysis.summary.details}`);
+
+      // Generar mensaje sugerido
+      const suggestedMessage = this.getSuggestedMessage(analysis.suggestedType, analysis.categories);
+
+      const readline = require('readline');
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+
+      console.log('\n💡 Mensaje sugerido para el commit:');
+      console.log(`   "${analysis.suggestedType}: ${suggestedMessage}"`);
+
+      rl.question('\n🤖 ¿Deseas usar el tipo y mensaje sugeridos? (s/n): ', (answer) => {
+        if (answer.toLowerCase().startsWith('s')) {
+          rl.question('✍️  ¿Quieres editar el mensaje sugerido? Deja vacío para usar el sugerido: ', (customMessage) => {
+            const finalMessage = customMessage.trim() || suggestedMessage;
+            rl.close();
+            this.createCommit(analysis.suggestedType, finalMessage);
+          });
+        } else {
+          rl.question('📝 Ingresa el tipo de commit (feat/fix/docs/style/refactor/test/chore/ci): ', (type) => {
+            rl.question('✍️  Escribe el mensaje del commit: ', (message) => {
+              rl.close();
+              this.createCommit(type, message);
+            });
+          });
+        }
+      });
+
+      return;
+    }
+
+    // Comportamiento original si se proporcionan argumentos
     if (args.length < 2) {
-      console.error('Usage: /release commit <type> <message>');
-      console.error('Types: feat, fix, docs, style, refactor, test, chore, ci');
+      console.error('Uso: /release commit <tipo> <mensaje>');
+      console.error('Tipos: feat, fix, docs, style, refactor, test, chore, ci');
+      console.error('\n💡 Consejo: Usa "/release commit" sin argumentos para análisis automático');
       process.exit(1);
     }
 
     const [type, ...messageParts] = args;
     const message = messageParts.join(' ');
+    this.createCommit(type, message);
+  }
 
+  createCommit(type, message) {
     const validTypes = ['feat', 'fix', 'docs', 'style', 'refactor', 'test', 'chore', 'ci'];
     if (!validTypes.includes(type)) {
-      console.error(`Invalid commit type: ${type}`);
-      console.error(`Valid types: ${validTypes.join(', ')}`);
+      console.error(`Tipo de commit inválido: ${type}`);
+      console.error(`Tipos válidos: ${validTypes.join(', ')}`);
       process.exit(1);
     }
 
     const fullMessage = `${type}: ${message}`;
 
     try {
-      console.log(`📝 Creating commit: ${fullMessage}`);
+      console.log(`📝 Creando commit: ${fullMessage}`);
       execSync(`git add -A`, { stdio: 'inherit' });
       execSync(`git commit -m "${fullMessage}"`, { stdio: 'inherit' });
-      console.log('✅ Commit created successfully');
+      console.log('✅ ¡Commit creado exitosamente!');
     } catch (error) {
-      console.error('❌ Failed to create commit:', error.message);
+      console.error('❌ Error al crear commit:', error.message);
       process.exit(1);
     }
   }
 
+  getStatusIcon(statusCode) {
+    if (statusCode.includes('A')) return '📁';
+    if (statusCode.includes('M')) return '📝';
+    if (statusCode.includes('D')) return '🗑️';
+    if (statusCode.includes('R')) return '🔄';
+    if (statusCode.includes('C')) return '📋';
+    return '❓';
+  }
+
   makeRelease(args) {
+    // Si no se proporcionan argumentos, analizar cambios y sugerir versión
+    if (args.length === 0) {
+      const analysis = this.analyzeChanges();
+
+      if (!analysis.hasChanges) {
+        console.log('ℹ️  No hay cambios pendientes para release.');
+
+        // Mostrar commits recientes que no han sido releaseados
+        this.showUnreleasedCommits();
+        return;
+      }
+
+      console.log('\n🔍 Análisis de cambios para Release:');
+      console.log('=====================================');
+
+      analysis.changes.forEach(change => {
+        const icon = this.getStatusIcon(change.statusCode);
+        console.log(`${icon} ${change.filePath}`);
+      });
+
+      console.log('\n📊 Análisis y recomendaciones:');
+      console.log(`   📈 Tipo de versión sugerido: ${analysis.suggestedVersion}`);
+      console.log(`   📂 Categoría principal: ${analysis.summary.type}`);
+      console.log(`   📋 Resumen de cambios: ${analysis.summary.details}`);
+
+      const readline = require('readline');
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+
+      console.log('\n💡 Recomendación basada en los cambios detectados:');
+      rl.question('\n🤖 ¿Deseas usar la versión sugerida? (s/n): ', (answer) => {
+        if (answer.toLowerCase().startsWith('s')) {
+          rl.question('\n🚀 ¿Es una versión preliminar (prerelease)? (s/n): ', (prereleaseAnswer) => {
+            const prerelease = prereleaseAnswer.toLowerCase().startsWith('s');
+            rl.close();
+            this.createRelease(analysis.suggestedVersion, prerelease);
+          });
+        } else {
+          rl.question('\n📈 Elige tipo de versión (major/minor/patch): ', (versionType) => {
+            rl.question('🚀 ¿Es una versión preliminar (prerelease)? (s/n): ', (prereleaseAnswer) => {
+              const prerelease = prereleaseAnswer.toLowerCase().startsWith('s');
+              rl.close();
+              this.createRelease(versionType, prerelease);
+            });
+          });
+        }
+      });
+
+      return;
+    }
+
+    // Comportamiento original si se proporcionan argumentos
     const options = {
       major: args.includes('--major'),
       minor: args.includes('--minor'),
@@ -157,47 +480,108 @@ class ReleaseCommand {
     };
 
     if (!Object.values(options).some(Boolean)) {
-      console.error('Usage: /release release [--major|--minor|--patch] [--prerelease]');
+      console.error('Uso: /release release [--major|--minor|--patch] [--prerelease]');
+      console.error('\n💡 Consejo: Usa "/release release" sin argumentos para análisis automático');
       process.exit(1);
     }
 
     const bumpType = options.major ? 'major' : options.minor ? 'minor' : 'patch';
-    const prereleaseFlag = options.prerelease ? '--prerelease' : '';
+    this.createRelease(bumpType, options.prerelease);
+  }
 
+  createRelease(bumpType, prerelease = false) {
     try {
-      console.log(`🚀 Creating ${bumpType} release...`);
+      const versionName = prerelease ? 'preliminar' : bumpType;
+      console.log(`🚀 Creando release ${versionName}...`);
 
-      // Check if there are uncommitted changes
+      // Verificar si hay cambios sin commitear
       const status = execSync('git status --porcelain', { encoding: 'utf8' });
       if (status.trim()) {
-        console.log('⚠️  You have uncommitted changes. Please commit them first.');
+        console.log('⚠️  Tienes cambios sin commitear. Por favor, commitea los cambios primero.');
         process.exit(1);
       }
 
-      // Check if we're on main branch
+      // Verificar si estamos en la rama main
       const branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
       if (branch !== 'main') {
-        console.log('⚠️  You are not on the main branch. Switch to main first.');
+        console.log('⚠️  No estás en la rama main. Por favor, cambia a la rama main primero.');
         process.exit(1);
       }
 
-      // Pull latest changes
-      console.log('📥 Pulling latest changes...');
+      // Obtener últimos cambios
+      console.log('📥 Obteniendo últimos cambios del remoto...');
       execSync('git pull origin main', { stdio: 'inherit' });
 
-      // Create release commit and tag
-      const tag = `v${this.getNextVersion(bumpType, options.prerelease)}`;
-      execSync(`git tag -a ${tag} -m "Release ${tag}"`, { stdio: 'inherit' });
+      // Crear tag de release
+      const tag = `v${this.getNextVersion(bumpType, prerelease)}`;
+      const tagName = prerelease ? `${tag}-pre` : tag;
 
-      console.log(`🏷️  Tag ${tag} created`);
-      console.log('📤 Push changes and tags...');
+      console.log(`🏷️  Creando tag: ${tagName}`);
+      execSync(`git tag -a "${tagName}" -m "Release ${tagName}"`, { stdio: 'inherit' });
+
+      console.log('📤 Enviando cambios y tags al repositorio...');
       execSync('git push origin main', { stdio: 'inherit' });
-      execSync(`git push origin ${tag}`, { stdio: 'inherit' });
+      execSync(`git push origin "${tagName}"`, { stdio: 'inherit' });
 
-      console.log('✅ Release triggered successfully');
+      console.log('✅ ¡Release creado exitosamente!');
+      console.log('\n📋 Próximos pasos:');
+      console.log('   1. Ve a GitHub para crear el Release desde el tag creado');
+      console.log('   2. Esto disparará automáticamente el workflow de publicación en npm');
+      console.log('   3. Verifica que el paquete se publique correctamente en npm');
+      console.log('   4. Comprueba que el tag y la release aparezcan en el repositorio');
     } catch (error) {
-      console.error('❌ Failed to create release:', error.message);
+      console.error('❌ Error al crear release:', error.message);
       process.exit(1);
+    }
+  }
+
+  showUnreleasedCommits() {
+    try {
+      const latestTag = execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim();
+      const commits = execSync(`git log ${latestTag}..HEAD --oneline`, { encoding: 'utf8' }).trim();
+
+      console.log(`\n📋 Análisis de commits desde ${latestTag}:`);
+      console.log('=====================================');
+
+      if (commits) {
+        console.log(commits);
+
+        // Analizar los commits para sugerir versión
+        const commitLines = commits.split('\n').filter(line => line.trim());
+        const featCount = commitLines.filter(line => line.includes('feat:')).length;
+        const fixCount = commitLines.filter(line => line.includes('fix:')).length;
+        const docsCount = commitLines.filter(line => line.includes('docs:')).length;
+        const choreCount = commitLines.filter(line => line.includes('chore:')).length;
+
+        let suggestedVersion = 'patch';
+        let versionReason = 'Solo hay cambios de documentación o mantenimiento';
+
+        if (featCount > 0) {
+          suggestedVersion = 'minor';
+          versionReason = `Se detectaron ${featCount} nueva(s) funcionalidad(es)`;
+        } else if (fixCount > 0) {
+          suggestedVersion = 'patch';
+          versionReason = `Se detectaron ${fixCount} corrección(es) de errores`;
+        }
+
+        console.log('\n📊 Resumen del análisis:');
+        console.log(`   🆕 Nuevas funcionalidades (feat): ${featCount}`);
+        console.log(`   🐛 Correcciones (fix): ${fixCount}`);
+        console.log(`   📚 Documentación (docs): ${docsCount}`);
+        console.log(`   🔧 Mantenimiento (chore): ${choreCount}`);
+        console.log(`   📈 Versión recomendada: ${suggestedVersion.toUpperCase()}`);
+        console.log(`   💡 Motivo: ${versionReason}`);
+
+        if (featCount === 0 && fixCount === 0 && (docsCount > 0 || choreCount > 0)) {
+          console.log('\n💡 Sugerencia: Considera crear un release PATCH para publicar mejoras de documentación y mantenimiento.');
+        }
+      } else {
+        console.log('No hay commits nuevos desde el último tag.');
+        console.log('💡 Considera hacer algunos commits antes de crear un nuevo release.');
+      }
+    } catch (error) {
+      console.log('⚠️  No se pudo determinar el último tag o los commits.');
+      console.log('   Esto podría ser un repositorio nuevo o sin tags previos.');
     }
   }
 
@@ -296,33 +680,48 @@ class ReleaseCommand {
 
   showHelp() {
     console.log(`
-🚀 Release Management Command
+🚀 Comando de Gestión de Releases - Edición Inteligente
 
-Usage: /release [action] [options]
+Uso: /release [acción] [opciones]
 
-Actions:
-  status [--verbose]     Show current release status
-  commit <type> <msg>    Create conventional commit
-  release [--major|--minor|--patch] [--prerelease]  Create release
-  configure              Show current configuration
-  verify                 Verify setup
-  help                   Show this help
+Acciones:
+  status [--verbose]           Muestra el estado actual del release
+  commit [tipo] [mensaje]     Crea commit convencional (modo inteligente sin argumentos)
+  release [--major|--minor|--patch] [--prerelease]  Crea release (modo inteligente sin argumentos)
+  configure                    Muestra configuración actual
+  verify                       Verifica configuración
+  help                         Muestra esta ayuda
 
-Commit Types:
-  feat     New feature
-  fix      Bug fix
-  docs     Documentation
-  style    Code style
-  refactor Code refactoring
-  test     Test changes
-  chore    Maintenance
-  ci       CI configuration
+🤖 Características Inteligentes:
+  • /release commit        - Analiza cambios automáticamente y sugiere tipo de commit
+  • /release release       - Analiza commits y sugiere versión
+  • Confirmación interactiva para todas las sugerencias
+  • Generación automática de mensajes en español
 
-Examples:
+Tipos de Commit:
+  feat     Nueva funcionalidad (sugiere versión minor)
+  fix      Corrección de error (sugiere versión patch)
+  docs     Cambios en documentación
+  style    Cambios de estilo y formato
+  refactor Refactorización de código
+  test     Cambios en pruebas
+  chore    Tareas de mantenimiento
+  ci       Cambios en CI/CD
+
+Ejemplos:
   /release status --verbose
-  /release commit feat "Add new feature"
+  /release commit              # Modo inteligente - análisis automático
+  /release commit feat "Añade nueva funcionalidad"
+  /release release             # Modo inteligente - sugerencia de versión
   /release release --minor
   /release verify
+
+Características de Análisis Inteligente:
+  • Categorización automática de archivos modificados
+  • Evaluación de impacto en versión
+  • Análisis de historial de commits
+  • Flujo de trabajo interactivo en español
+  • Generación de mensajes contextualizados
 `);
   }
 }

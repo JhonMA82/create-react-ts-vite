@@ -19,6 +19,13 @@ Shows the current release status and configuration.
 ### `commit [type] [message]`
 Creates a conventional commit with the specified type and message.
 
+**🤖 Smart Mode (NEW!):**
+When used without arguments, it automatically analyzes your changes and suggests:
+- The most appropriate commit type based on file changes
+- Suggested version bump (minor/patch)
+- Interactive confirmation
+
+**Manual Mode:**
 **Types:**
 - `feat`: New feature
 - `fix`: Bug fix
@@ -29,22 +36,38 @@ Creates a conventional commit with the specified type and message.
 - `chore`: Maintenance tasks
 - `ci`: CI configuration changes
 
-**Example:**
+**Examples:**
 ```bash
+# Smart mode - automatic analysis
+/release commit
+
+# Manual mode
 /release commit feat "Add new authentication system"
 ```
 
 ### `release [version]`
 Manually triggers a release (bypassing release-please).
 
+**🤖 Smart Mode (NEW!):**
+When used without arguments, it automatically:
+- Analyzes unstaged changes and suggests version type
+- Shows unreleased commits and their impact
+- Recommends minor/patch based on commit types
+- Interactive confirmation process
+
+**Manual Mode:**
 **Options:**
 - `--major`: Major version bump
 - `--minor`: Minor version bump
 - `--patch`: Patch version bump
 - `--prerelease`: Mark as prerelease
 
-**Example:**
+**Examples:**
 ```bash
+# Smart mode - automatic analysis
+/release release
+
+# Manual mode
 /release release --minor
 ```
 
@@ -59,8 +82,19 @@ Shows this help information.
 
 ## Features
 
-- **Automated Version Management**: Uses release-please for semantic versioning
+### 🤖 Intelligent Analysis
+- **Smart Commit Detection**: Automatically analyzes file changes to suggest the best commit type
+- **Version Recommendation**: Suggests minor/patch versions based on the nature of changes
+- **Commit Categorization**: Categorizes files by type (docs, tests, code, config, etc.)
+- **Interactive Confirmation**: Guides you through the process with intelligent suggestions
+
+### 🔄 Automated Version Management
+- **Semantic Versioning**: Uses release-please for proper version management
 - **Conventional Commits**: Validates commit messages following conventional commits specification
+- **Smart Release Suggestions**: Analyzes commit history to recommend version bumps
+- **Unreleased Commits Analysis**: Shows commits since last release and their impact
+
+### 🚀 CI/CD Integration
 - **GitHub Actions**: Automated CI/CD pipeline
 - **npm Publishing**: Automatic publishing to npm registry
 - **Pre-commit Hooks**: Ensures code quality before commits
@@ -89,19 +123,27 @@ The following files are configured by the setup script:
 
 ```bash
 # Check release status
-/release status
+/release status --verbose
 
-# Make a feature commit
+# Smart commit - automatic analysis
+/release commit
+
+# Manual commits
 /release commit feat "Add user profile page"
-
-# Make a bug fix commit
 /release commit fix "Resolve login issue on mobile"
 
-# Trigger a minor release
+# Smart release - automatic version suggestion
+/release release
+
+# Manual releases
 /release release --minor
+/release release --patch --prerelease
 
 # Verify configuration
 /release verify
+
+# Show unreleased commits analysis
+/release release
 ```
 
 ## Troubleshooting
