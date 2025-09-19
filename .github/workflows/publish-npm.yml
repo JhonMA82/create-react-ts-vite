@@ -1,5 +1,7 @@
 name: publish-npm
 on:
+  push:
+    branches: [main]
   release:
     types: [published]
 jobs:
@@ -20,4 +22,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Verify publication
-        run: npm view ${{ github.event.repository.name }}@${{ github.event.release.tag_name }}
+        run: |
+          if [ "${{ github.event.release.tag_name }}" != "" ]; then
+            npm view ${{ github.event.repository.name }}@${{ github.event.release.tag_name }}
+          else
+            npm view ${{ github.event.repository.name }}
+          fi
