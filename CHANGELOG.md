@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0](https://github.com/JhonMA82/create-react-ts-vite/compare/create-react-ts-vite-v1.1.0...create-react-ts-vite-v1.2.0) (2025-09-19)
+
+
+### Features
+
+* add automated release workflow configuration ([92b9337](https://github.com/JhonMA82/create-react-ts-vite/commit/92b9337c9aa87fefc60a18b8b309bc0694fe4c69))
+* add intelligent analysis to release command with auto-detection ([04e2d5b](https://github.com/JhonMA82/create-react-ts-vite/commit/04e2d5bbfd3d79993c279387260ed9bafd252dc3))
+
+
+### Bug Fixes
+
+* remove BOM character from release-please config JSON ([b4b9569](https://github.com/JhonMA82/create-react-ts-vite/commit/b4b9569cdf1c5f999ac9d6dd9699eda45cd605f4))
+* remove BOM character from release-please manifest JSON and update version ([dbaa90f](https://github.com/JhonMA82/create-react-ts-vite/commit/dbaa90f3657ca005d7afdfd57fd4fca607b6613e))
+
 ## [1.0.6] - 2025-09-17
 
 ### Changed
