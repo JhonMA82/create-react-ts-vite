@@ -18,9 +18,25 @@ jobs:
       - run: npm ci || npm i --no-audit --no-fund --ignore-scripts
       - run: npm run build --if-present
       - run: npm test --if-present
-      - run: npm publish --access public
+      - name: Get current version
+        id: version
+        run: echo "version=$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
+      - name: Check if version exists on npm
+        id: check_version
+        run: |
+          if npm view create-react-ts-vite@${{ steps.version.outputs.version }} version > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Publish to npm
+        if: steps.check_version.outputs.exists == 'false'
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Version already published
+        if: steps.check_version.outputs.exists == 'true'
+        run: echo "Version ${{ steps.version.outputs.version }} already published. Skipping npm publish."
       - name: Verify publication
         run: |
           if [ "${{ github.event.release.tag_name }}" != "" ]; then
