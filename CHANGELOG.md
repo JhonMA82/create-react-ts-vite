@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.0 (2025-09-19)
+
+
+### Features
+
+* setup conventional commits and release-please automation ([4f1edd9](https://github.com/JhonMA82/create-react-ts-vite/commit/4f1edd9a0717534fb4508896371f0412a7920914))
+
+
+### Bug Fixes
+
+* corrige validación de email ([d4e07ab](https://github.com/JhonMA82/create-react-ts-vite/commit/d4e07ab087abf27832bdc87098bd7241d631bc34))
+* remove deprecated husky v9 shebang from hooks ([7ca5ae7](https://github.com/JhonMA82/create-react-ts-vite/commit/7ca5ae7b1a67a6993eb17c7959b8e0d100e7dbaf))
+* remove npm auth token from .npmrc file ([092abe7](https://github.com/JhonMA82/create-react-ts-vite/commit/092abe75db030488b5f9b7c8b9aee0a26cb9b19e))
+
 ## [1.0.6] - 2025-09-17
 
 ### Changed
