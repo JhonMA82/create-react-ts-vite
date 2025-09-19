@@ -395,7 +395,9 @@ class ReleaseCommand {
       process.exit(1);
     }
 
-    const fullMessage = `${type}: ${message}`;
+    // Asegurar que el mensaje use formato imperativo y esté en español
+    const formattedMessage = this.formatCommitMessage(message);
+    const fullMessage = `${type}: ${formattedMessage}`;
 
     try {
       console.log(`📝 Creando commit: ${fullMessage}`);
@@ -406,6 +408,70 @@ class ReleaseCommand {
       console.error('❌ Error al crear commit:', error.message);
       process.exit(1);
     }
+  }
+
+  formatCommitMessage(message) {
+    // Convertir a formato imperativo si no lo está ya
+    let formattedMessage = message.trim();
+
+    // Eliminar palabras iniciales comunes que no son imperativas
+    const nonImperativePrefixes = [
+      'Se ha ', 'Se han ', 'Se está ', 'Se están ',
+      'He ', 'Ha ', 'Han ', 'Hemos ',
+      'Está ', 'Están ', 'Estoy ',
+      'Fue ', 'Fueron ', 'Era ', 'Eran '
+    ];
+
+    for (const prefix of nonImperativePrefixes) {
+      if (formattedMessage.startsWith(prefix)) {
+        formattedMessage = formattedMessage.substring(prefix.length);
+        break;
+      }
+    }
+
+    // Asegurar que empieza con verbo en imperativo común
+    const imperativeVerbs = [
+      'Añade', 'Agrega', 'Implementa', 'Crea', 'Desarrolla',
+      'Corrige', 'Soluciona', 'Repara', 'Arregla', 'Fix',
+      'Actualiza', 'Modifica', 'Cambia', 'Reemplaza',
+      'Elimina', 'Remueve', 'Borra', 'Quita',
+      'Mejora', 'Optimiza', 'Refactoriza', 'Reorganiza',
+      'Documenta', 'Explica', 'Describe', 'Agrega documentación',
+      'Mueve', 'Trasladada', 'Cambia ubicación', 'Reubica'
+    ];
+
+    // Si no empieza con un verbo imperativo, añadir uno adecuado según el contexto
+    const startsWithImperative = imperativeVerbs.some(verb =>
+      formattedMessage.toLowerCase().startsWith(verb.toLowerCase())
+    );
+
+    if (!startsWithImperative) {
+      // Intentar inferir el tipo de acción
+      if (formattedMessage.toLowerCase().includes('error') ||
+          formattedMessage.toLowerCase().includes('bug') ||
+          formattedMessage.toLowerCase().includes('fallo')) {
+        formattedMessage = `Corrige ${formattedMessage}`;
+      } else if (formattedMessage.toLowerCase().includes('nuev') ||
+                 formattedMessage.toLowerCase().includes('funcionalidad') ||
+                 formattedMessage.toLowerCase().includes('característica')) {
+        formattedMessage = `Añade ${formattedMessage}`;
+      } else if (formattedMessage.toLowerCase().includes('actualiz') ||
+                 formattedMessage.toLowerCase().includes('cambi') ||
+                 formattedMessage.toLowerCase().includes('modific')) {
+        formattedMessage = `Actualiza ${formattedMessage}`;
+      } else {
+        formattedMessage = `Mejora ${formattedMessage}`;
+      }
+    }
+
+    // Asegurar que termina con punto solo si es una oración completa
+    if (formattedMessage.endsWith('.') && formattedMessage.length > 5) {
+      return formattedMessage;
+    } else if (formattedMessage.length > 5) {
+      return formattedMessage + '.';
+    }
+
+    return formattedMessage;
   }
 
   getStatusIcon(statusCode) {
@@ -601,28 +667,28 @@ class ReleaseCommand {
   }
 
   showConfiguration() {
-    console.log('\n⚙️  Current Configuration');
+    console.log('\n⚙️  Configuración Actual');
     console.log('========================');
 
-    console.log('📦 Package Configuration:');
-    console.log(`  Name: ${this.config.packageName}`);
-    console.log(`  Version: ${this.config.currentVersion}`);
+    console.log('📦 Configuración del Paquete:');
+    console.log(`  Nombre: ${this.config.packageName}`);
+    console.log(`  Versión: ${this.config.currentVersion}`);
 
     if (this.config.releasePlease) {
       console.log('\n🤖 Release-please Configuration:');
       console.log(JSON.stringify(this.config.releasePlease, null, 2));
     }
 
-    console.log('\n🔗 Next Steps:');
-    console.log('1. Ensure NPM_TOKEN is configured in GitHub secrets');
-    console.log('2. Use conventional commits for your changes');
-    console.log('3. Push changes to main branch');
-    console.log('4. Release-please will create a Release PR');
-    console.log('5. Merge the Release PR to publish to npm');
+    console.log('\n🔗 Próximos Pasos:');
+    console.log('1. Asegúrate de que NPM_TOKEN esté configurado en los secrets de GitHub');
+    console.log('2. Usa commits convencionales para tus cambios');
+    console.log('3. Sube los cambios a la rama main');
+    console.log('4. Release-please creará un Release PR');
+    console.log('5. Fusiona el Release PR para publicar en npm');
   }
 
   verifySetup() {
-    console.log('\n🔍 Verifying Setup');
+    console.log('\n🔍 Verificando Configuración');
     console.log('==================');
 
     let allGood = true;
@@ -666,14 +732,14 @@ class ReleaseCommand {
         console.log('✅ No uncommitted changes');
       }
     } catch (error) {
-      console.log('❌ Git status check failed');
+      console.log('❌ Fallo en la verificación de estado de git');
       allGood = false;
     }
 
-    console.log('\n' + (allGood ? '✅ All checks passed!' : '❌ Some issues found. Please fix them before proceeding.'));
+    console.log('\n' + (allGood ? '✅ ¡Todas las verificaciones pasaron!' : '❌ Se encontraron algunos problemas. Por favor, arréglalos antes de continuar.'));
 
     if (!allGood) {
-      console.log('\n💡 Run the setup script again: powershell -ExecutionPolicy Bypass -File setup-conventional-release.ps1');
+      console.log('\n💡 Ejecuta el script de configuración nuevamente: powershell -ExecutionPolicy Bypass -File setup-conventional-release.ps1');
       process.exit(1);
     }
   }
