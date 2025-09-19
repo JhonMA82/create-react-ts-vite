@@ -1,10 +1,7 @@
-﻿{
-    "include-v-in-tag":  true,
-    "release-type":  "node",
-    "packages":  {
-                     ".":  {
-
-                           }
-                 }
+{
+  "include-v-in-tag": true,
+  "release-type": "node",
+  "packages": {
+    ".": {}
+  }
 }
-
