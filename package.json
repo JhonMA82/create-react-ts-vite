@@ -1,7 +1,7 @@
 {
   "name": "create-react-ts-vite",
   "type": "module",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "CLI template generator para proyectos React+Vite+TypeScript+Vitest con mejores prÃ¡cticas 2025",
   "main": "lib/index.js",
   "bin": {
