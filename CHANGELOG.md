@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Documentation
+
+- Actualiza configuración de agentes y añade documentación completa de Claude Code
+- Mejora la integración con Claude Code y documentación del flujo de trabajo
+
+## [1.2.2] - 2025-09-19
+
+### Changed
+
+- Reemplaza script PowerShell de configuración con agente Claude para git commits
+- Elimina el script setup-conventional-release.ps1 que automatizaba la configuración de Husky, Commitlint y release-please
+- Transición a enfoque más moderno y automatizado para la gestión de commits y releases
+
+## [1.2.1] - 2025-09-19
+
+### Added
+
+- Comprehensive gitignore template for generated projects
+- Complete .gitignore template with Node.js, React, and Vite patterns
+- Testing, build, and environment variable exclusions
+- Claude Code specific cache and log exclusions
+- Editor configurations and OS generated files
+
+### Changed
+
+- Improved developer experience for generated projects
+- Enhanced template handling with npm publishing compatibility
+
 ## [1.2.0](https://github.com/JhonMA82/create-react-ts-vite/compare/create-react-ts-vite-v1.1.0...create-react-ts-vite-v1.2.0) (2025-09-19)
 
 
