@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/JhonMA82/create-react-ts-vite/compare/create-react-ts-vite-v1.2.0...create-react-ts-vite-v1.3.0) (2025-09-20)
+
+
+### Features
+
+* add automated release workflow configuration ([92b9337](https://github.com/JhonMA82/create-react-ts-vite/commit/92b9337c9aa87fefc60a18b8b309bc0694fe4c69))
+* add comprehensive gitignore template for generated projects ([663d88c](https://github.com/JhonMA82/create-react-ts-vite/commit/663d88c8b551b857f9b02dfad3700148dbc8b6a1))
+* add intelligent analysis to release command with auto-detection ([04e2d5b](https://github.com/JhonMA82/create-react-ts-vite/commit/04e2d5bbfd3d79993c279387260ed9bafd252dc3))
+* modify npm-publish workflow to trigger on pushes to main branch ([85bba4f](https://github.com/JhonMA82/create-react-ts-vite/commit/85bba4f24bf9b19f1d81f807c85846e110014490))
+
+
+### Bug Fixes
+
+* add debug info and permissions to npm-publish workflow ([c083acd](https://github.com/JhonMA82/create-react-ts-vite/commit/c083acdc18236ea6de002cdc63f603bb53ae92c2))
+* change test script to exit with success when no tests are specified ([bf01192](https://github.com/JhonMA82/create-react-ts-vite/commit/bf01192b204fded9e9f243a439e1a3225543b052))
+* remove BOM character from release-please config JSON ([b4b9569](https://github.com/JhonMA82/create-react-ts-vite/commit/b4b9569cdf1c5f999ac9d6dd9699eda45cd605f4))
+* remove BOM character from release-please manifest JSON and update version ([dbaa90f](https://github.com/JhonMA82/create-react-ts-vite/commit/dbaa90f3657ca005d7afdfd57fd4fca607b6613e))
+* update workflow to handle version conflicts and set version to 1.0.7 ([6721ae7](https://github.com/JhonMA82/create-react-ts-vite/commit/6721ae7b86ab5201c8298ed4e722296feae44b79))
+
 ## [1.2.0](https://github.com/JhonMA82/create-react-ts-vite/compare/create-react-ts-vite-v1.1.0...create-react-ts-vite-v1.2.0) (2025-09-19)
 
 
