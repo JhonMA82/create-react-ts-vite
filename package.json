@@ -7,6 +7,13 @@
   "bin": {
     "create-react-ts-vite": "bin/cli.js"
   },
+  "files": [
+    "lib",
+    "bin",
+    "templates",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "test": "echo \"No tests specified - skipping\" && exit 0",
     "prepublishOnly": "npm run build",

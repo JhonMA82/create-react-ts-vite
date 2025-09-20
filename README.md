@@ -31,7 +31,7 @@ La motivación detrás de este proyecto es proporcionar una plantilla lista para
 
 ## ✨ Características Principales
 
-- ⚛️ **React 18 con TypeScript**: Soporte completo para componentes tipados y hooks modernos.
+- ⚛️ **React 19 con TypeScript**: Soporte completo para componentes tipados y hooks modernos.
 - ⚡ **Vite con SWC**: Compilación y hot-reload ultra-rápidos para un desarrollo fluido.
 - 🧪 **Vitest + React Testing Library**: Testing unitario e integración preconfigurados para una cobertura confiable.
 - 🎨 **Tailwind CSS**: Estilos utilitarios listos para usar, con configuración personalizable.
